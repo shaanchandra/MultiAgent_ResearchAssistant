@@ -1,0 +1,9 @@
+sqldb_dir: ./data/sqldb/csv_xlsx_sqldb.db
+vectordb_dir: ./data/vectordb
+csvfiles_dir: ./data/csv_xls
+pdffiles_dir: ./data/pdfs
+CLAUD_API_KEY: 
+GEMINI_API_KEY:
+GROQ_API_KEY:
+HF_API_KEY: 
+SERPER_API_KEY: 
