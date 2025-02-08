@@ -16,8 +16,12 @@ class Agent:
         self.model_endpoint = model_endpoint
         self.stop = stop
         self.guided_json = guided_json
-        
 
+        if server is None:
+            self.server = 'ollama'
+        if model is None:
+            self.model = 'llama3:instruct'
+        
         
 
     def get_llm(self, json_model=True):
@@ -29,3 +33,11 @@ class Agent:
 
     def update_state(self, key, value):
         self.state = {**self.state, key: value}
+    
+
+
+
+class EndNodeAgent(Agent):
+    def invoke(self):
+        self.update_state("end_chain", "end_chain")
+        return self.state

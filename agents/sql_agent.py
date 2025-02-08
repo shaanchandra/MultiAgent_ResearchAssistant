@@ -47,15 +47,5 @@ class SQLAgent(Agent):
                 raise ValueError()
             print("---")
 
-
-        # response = events[-1]["messages"][-1].content
-
-        # feedback_value = feedback() if callable(feedback) else feedback
-        # feedback_value = check_for_content(feedback_value)
-        # sql_prompt = prompt.format(feedback=feedback_value)        
-
-        # ai_msg = llm.invoke(messages)
-        # response = ai_msg.content
-
         self.update_state("sqlagent_response", response)
         return self.state

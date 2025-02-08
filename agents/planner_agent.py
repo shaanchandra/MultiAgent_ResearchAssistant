@@ -7,7 +7,7 @@ from utils.utils import get_current_utc_datetime, check_for_content
 from states import AgentGraphState
 from agents.agent_master import Agent
 
-
+ 
 
 
 class PlannerAgent(Agent):
@@ -26,6 +26,10 @@ class PlannerAgent(Agent):
         ai_msg = llm.invoke(messages)
         response = ai_msg.content
 
+        print(colored(f"Planner Agent has decided on the following next course of action👩🏿‍💻", 'red'))
+        print(colored(f"Next Agent chosen :  {response['next_agent']}", 'red'))
+        print(colored(f"Strategy to accomplish the task :  {response['overall_strategy']}", 'red'))
+        print(colored(f"Reasoning provided :  {response['strategy_reason']}", 'red'))
+
         self.update_state("planner_response", response)
-        print(colored(f"Planner 👩🏿‍💻: {response}", 'cyan'))
         return self.state
