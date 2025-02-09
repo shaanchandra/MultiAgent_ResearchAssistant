@@ -14,7 +14,8 @@ from agents.agent_master import EndNodeAgent
 from prompts.planner_prompt import planner_prompt, planner_guided_json
 from prompts.sqlagent_prompt import sqlagent_prompt
 from prompts.ragagent_prompt import ragagent_prompt
-from tools.google_serper import get_google_serper
+from prompts.reviewer_prompt import reviewer_prompt
+# from tools.google_serper import get_google_serper
 from states import AgentGraphState, get_agent_graph_state, state
 
 
@@ -61,6 +62,7 @@ def create_graph(config=None, server=None, model=None, stop=None, model_endpoint
     graph.add_node(
         "websearch_agent", 
         lambda state: WebSearchAgent(
+            config=config,
             state=state,
             model=model,
             server=server,
@@ -76,6 +78,7 @@ def create_graph(config=None, server=None, model=None, stop=None, model_endpoint
     graph.add_node(
         "rag_agent", 
         lambda state: RAGAgent(
+            config=config,
             state=state,
             model=model,
             server=server,
@@ -94,6 +97,7 @@ def create_graph(config=None, server=None, model=None, stop=None, model_endpoint
     graph.add_node(
         "reviewer_agent", 
         lambda state: ReviewerAgent(
+            config=config,
             state=state,
             model=model,
             server=server,
@@ -102,10 +106,8 @@ def create_graph(config=None, server=None, model=None, stop=None, model_endpoint
             temperature=temperature
         ).invoke(
             research_question=state["research_question"],
-            feedback=lambda: get_agent_graph_state(state=state, state_key="reviewer_latest"),
-            previous_reports=lambda: get_agent_graph_state(state=state, state_key="reporter_all"),
-            research=lambda: get_agent_graph_state(state=state, state_key="scraper_latest"),
-            prompt=reporter_prompt_template
+            
+            prompt=reviewer_prompt
         )
     )
 
@@ -114,7 +116,7 @@ def create_graph(config=None, server=None, model=None, stop=None, model_endpoint
     graph.add_node("end", lambda state: EndNodeAgent(state).invoke())
 
     # Define the edges in the agent graph
-    def pass_review(state: AgentGraphState):
+    def planner_next_agent(state: AgentGraphState):
         review_list = state["planner_response"]
         if review_list:
             review = review_list[-1]
@@ -131,6 +133,29 @@ def create_graph(config=None, server=None, model=None, stop=None, model_endpoint
             next_agent = review_data["next_agent"]
         else:
             next_agent = "end"
+        print("\nInvoking the Next agent: ", next_agent)
+        return next_agent
+    
+
+    # Define the edges in the agent graph
+    def pass_review(state: AgentGraphState):
+        review_list = state["reviewer_response"]
+        if review_list:
+            review = review_list[-1]
+        else:
+            review = "No review"
+
+        if review != "No review":
+            if isinstance(review, HumanMessage):
+                review_content = review.content
+            else:
+                review_content = review
+            
+            review_data = json.loads(review_content)
+            next_agent = review_data["next_agent"]
+        else:
+            next_agent = "end"
+        print("\nInvoking the Next agent/ ending the thread: ", next_agent)
         return next_agent
     
 
@@ -140,7 +165,7 @@ def create_graph(config=None, server=None, model=None, stop=None, model_endpoint
 
     graph.add_conditional_edges(
         "planner",
-        lambda state: pass_review(state=state),
+        lambda state: planner_next_agent(state=state),
     )
 
     graph.add_edge("sql_agent", "reviewer_agent")

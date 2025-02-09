@@ -19,6 +19,9 @@ To extract information from each of these sources, you can use the following age
 Based on the query from the user, you must decide which agent to use based on what kind of data is needed to answer the question. You can also use multiple agents in a sequence to answer the question.
 Just make sure to add that in your strategy so that the validation agent can understand your plan.
 
+If anything about a paper (summary, explain components, etc) is needed, you can first use the RAG agent to extract the information from the PDFs in case it is present.
+If the requsted paper is not available locally, only then you can use the WebSearch agent to look up the paper online.
+
 If you receive feedback, you must adjust your plan accordingly. Here is the feedback received:
 Feedback: {feedback}
 

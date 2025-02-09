@@ -1,5 +1,4 @@
 from termcolor import colored
-from prompts.planner_prompt import sql_prompt
 from langchain_community.utilities import SQLDatabase
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain import hub

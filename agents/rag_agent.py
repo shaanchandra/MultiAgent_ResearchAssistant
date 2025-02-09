@@ -1,4 +1,5 @@
 from termcolor import colored
+import json, re
 
 from agents.agent_master import Agent
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -21,7 +22,7 @@ class RAGAgent(Agent):
             encode_kwargs=encode_kwargs
         )
         vectordb = Chroma(persist_directory=vector_db_dir, embedding_function=model)
-        retriever = vectordb.as_retriever(search_kwargs={"k": 1, "fetch_k": 5})
+        retriever = vectordb.as_retriever(search_kwargs={"k": 1}) # "fetch_k": 5
 
         # retrieve the relevant documents
         relevant_docs = retriever.get_relevant_documents(research_question)
@@ -31,14 +32,26 @@ class RAGAgent(Agent):
         llm = self.get_llm()
 
         context = "\n\n".join([doc.page_content for doc in relevant_docs])
-        rag_prompt = prompt.format(context=context)
+        rag_prompt = prompt.format(context=context, feedback=feedback)
         messages = [
             {"role": "system", "content": rag_prompt},
             {"role": "user", "content": f"research question: {research_question}"}
         ]
         response = llm.invoke(messages).content
+        print(response)
 
-        print(colored(f"RAG Agent👩🏿‍💻  answers :  {response}", 'yellow'))
+        # Extract JSON portion using regex
+        json_match = re.search(r'\{.*\}', response, re.DOTALL)
+        if json_match:
+            json_str = json_match.group()
+            print_response = json.loads(json_str)
+        else:
+            print("No valid JSON found!")
+
+        print(colored(f"\nRAG Agent👩🏿‍💻  answers : ", 'yellow'))
+        print(colored(f"\nTotal chunks of docs retrieved as relevant:  {len(relevant_docs)}", 'yellow'))
+        print(colored(f"\nRAG Agent has extracted the following response :  {print_response['response']}", 'yellow'))
+        print(colored(f"\nRAG Agent used the following info to frame the response :  {print_response['info_used']}", 'yellow'))
 
         self.update_state("ragagent_response", response)
         return self.state
