@@ -15,8 +15,7 @@ Feedback: {feedback}
 The context you need to use to answer the research question is:
 Context : {context}
 
-
-
+Always return valid JSON as plain text, without wrapping it in quotes or additional formatting and text.
 Make sure your response takes the following json format only:
 
     "response": "The nicely formatted answer to the user query"
