@@ -35,7 +35,7 @@ class WebSearchAgent(Agent):
         response = web_search_tool.invoke({"args": {'query': research_question}, "type": "tool_call", "name": "AI RA", "id":"search"})
         urls = {k: v for k, v in response.artifact.items() if k=='results'}
         response_artefact = {k: str(v)[:1000] for k, v in response.artifact.items()} # keys are : query, follow_up_questions, answer, images, results, response_time
-
+        # print(response_artefact)
         print(colored("WebSearch Agent 👩🏿‍💻: I am ready to help you with your web-based queries.", "green"))
         print(colored(f"\nYou asked : {research_question}", "green"))
         print(colored(f"\nThe answer that I could find is :\n {response_artefact['answer']}", "green"))

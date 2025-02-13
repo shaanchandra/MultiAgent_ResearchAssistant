@@ -16,27 +16,28 @@ To extract information from each of these sources, you can use the following age
 2. RAG Agent: To extract information from research papers as PDFs
 3. WebSearch Agent: To extract information from web search results
 
-Based on the query from the user, you must decide which agent to use based on what kind of data is needed to answer the question. You can also use multiple agents in a sequence to answer the question.
+Based on the query from the user, you must decide which agent to use based on what kind of data is needed to answer the question. You can also use multiple agents in a sequence to answer the question. Start with one agent and then the validation agent will loop back to you to execute the second agent.
 Just make sure to add that in your strategy so that the validation agent can understand your plan.
 
-If anything about a paper (summary, explain components, etc) is needed, you can first use the RAG agent to extract the information from the PDFs in case it is present.
-If the requsted paper is not available locally, only then you can use the WebSearch agent to look up the paper online.
 
 If you receive feedback, you must adjust your plan accordingly. Here is the feedback received:
 Feedback: {feedback}
 
 
-Make very sure that your response takes the following json format:
+Always return valid JSON as plain text, without wrapping it in quotes or additional formatting and text. The json format is mentioned below,
 
     "next_agent": "rag_agent or sql_agent or websearch_agent"
     "overall_strategy": "The overall strategy to guide the search process"
     "strategy_reason": "The reason for choosing the strategy and the agent to execute the plan"
-    "additional_information": "Any additional information that the chosen agent needs to know to execute the plan better"
+    "additional_information": "Any additional information that the chosen agent or valdiation agents needs to know to execute the plan better"
+
+Make sure your final response is strictly in the JSON format provided above with correct parenthesis and use double quotes.
 
 """
 
 
-
+"""If anything about a paper (summary, explain components, etc) is needed, you can first use the RAG agent to extract the information from the PDFs in case it is present.
+If the requsted paper is not available locally, only then you can use the WebSearch agent to look up the paper online."""
 
 
 

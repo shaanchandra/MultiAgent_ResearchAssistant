@@ -22,13 +22,13 @@ class RAGAgent(Agent):
             encode_kwargs=encode_kwargs
         )
         vectordb = Chroma(persist_directory=vector_db_dir, embedding_function=model)
-        retriever = vectordb.as_retriever(search_kwargs={"k": 1}) # "fetch_k": 5
+        retriever = vectordb.as_retriever(search_kwargs={"k": 5}) # "fetch_k": 5
 
         # retrieve the relevant documents
         relevant_docs = retriever.get_relevant_documents(research_question)
+        print(relevant_docs)
 
         # Generate response
-        
         llm = self.get_llm()
 
         context = "\n\n".join([doc.page_content for doc in relevant_docs])
@@ -38,15 +38,22 @@ class RAGAgent(Agent):
             {"role": "user", "content": f"research question: {research_question}"}
         ]
         response = llm.invoke(messages).content
-        print(response)
+        # print(response)
 
         # Extract JSON portion using regex
+        flag=0
         json_match = re.search(r'\{.*\}', response, re.DOTALL)
         if json_match:
             json_str = json_match.group()
             print_response = json.loads(json_str)
         else:
+            flag=1
             print("No valid JSON found!")
+        
+        if flag==1:
+            print(response)
+        else:
+            print(print_response)
 
         print(colored(f"\nRAG Agent👩🏿‍💻  answers : ", 'yellow'))
         print(colored(f"\nTotal chunks of docs retrieved as relevant:  {len(relevant_docs)}", 'yellow'))

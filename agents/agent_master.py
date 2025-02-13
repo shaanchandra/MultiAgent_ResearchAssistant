@@ -20,7 +20,7 @@ class Agent:
         if server is None:
             self.server = 'ollama'
         if model is None:
-            self.model = 'llama3:instruct'
+            self.model = 'llama3.2'
         
         
 

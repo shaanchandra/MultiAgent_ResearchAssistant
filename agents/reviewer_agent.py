@@ -48,13 +48,19 @@ class ReviewerAgent(Agent):
         ai_msg = llm.invoke(messages)
         response = ai_msg.content
         # Extract JSON portion using regex
+        flag=0
         json_match = re.search(r'\{.*\}', response, re.DOTALL)
         if json_match:
             json_str = json_match.group()
             print_response = json.loads(json_str)
         else:
+            flag=1
             print("No valid JSON found!")
-        print(print_response)
+        
+        # if flag==1:
+        #     print(response)
+        # else:
+        #     print(print_response)
 
 
         print(colored(f"\nReviewer Agent provides its evluation 👩🏿‍💻", 'cyan'))

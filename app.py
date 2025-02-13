@@ -21,6 +21,7 @@ config['sqldb_dir'] = f"sqlite:///{config['sqldb_dir']}"
 # Run a model using Ollama
 server = 'ollama'
 model = 'llama3.2'
+# model = 'deepseek-r1:7b'
 model_endpoint = None
 
 

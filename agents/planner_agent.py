@@ -35,14 +35,26 @@ class PlannerAgent(Agent):
         else:
             print("Failed to load the model after multiple retries.")
 
+        # response = json.dumps(response)
+        # print(response)
+        # print()
+        # print()
+
         # Extract JSON portion using regex
+        flag=0
         json_match = re.search(r'\{.*\}', response, re.DOTALL)
         if json_match:
             json_str = json_match.group()
-            print_response = json.loads(json_str)
+            # print_response = json.loads(json_str)
+            print_response = json.dumps(json_str)
         else:
+            flag=1
             print("No valid JSON found!")
-        # print_response = json.loads(response)
+        
+        if flag==1:
+            print(response)
+        else:
+            print(print_response)
 
         print(colored(f"\nPlanner Agent has decided on the following next course of action👩🏿‍💻\n", 'red'))
         print(colored(f"Next Agent chosen :                {print_response['next_agent']}", 'red'))

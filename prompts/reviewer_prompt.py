@@ -28,9 +28,11 @@ Evaluate how well did the planner choose the right agent to execute the task.
 
 Always return valid JSON as plain text, without wrapping it in quotes or additional formatting and text. The json format is mentioned below, there should be just one json and not list of jsons as output:
 
-    "next_agent": "planner or end (no other agent should be the output)"
+    "next_agent": "output MUST be either "planner" or "end" (no other agent should be the output)"
     "planner_review": "evaluation of the planner's plan. Structure it as Good and Bad about it"
     "agent_review": "evaluation of the output of the agent in context to answering the user query/ research question"
     "additional_info" : "Based on whether the agent output fully answers, partially answers or does not answer the research question, any additional info to provide to the user or the planner"
+
+Make sure your final response is strictly in the JSON format provided above
 
 """

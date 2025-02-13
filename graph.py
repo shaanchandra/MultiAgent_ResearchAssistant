@@ -46,6 +46,7 @@ def create_graph(config=None, server=None, model=None, stop=None, model_endpoint
     graph.add_node(
         "sql_agent",
         lambda state: SQLAgent(
+            config=config,
             state=state,
             model=model,
             server=server,
@@ -113,7 +114,7 @@ def create_graph(config=None, server=None, model=None, stop=None, model_endpoint
 
     
 
-    graph.add_node("end", lambda state: EndNodeAgent(state).invoke())
+    graph.add_node("end", lambda state: EndNodeAgent(config=config, state=state).invoke())
 
     # Define the edges in the agent graph
     def planner_next_agent(state: AgentGraphState):

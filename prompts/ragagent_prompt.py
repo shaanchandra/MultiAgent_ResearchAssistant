@@ -21,6 +21,7 @@ Make sure your response takes the following json format only:
     "response": "The nicely formatted answer to the user query"
     "info_used": "numbered short excerpts of the documents used to answer the query"
 
+Make sure your final response is strictly in the above JSON format
 """
 
 
